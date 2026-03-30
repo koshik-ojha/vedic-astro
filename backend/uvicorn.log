@@ -1,0 +1,85 @@
+INFO:     Will watch for changes in these directories: ['D:\\next\\vedic-astro-bot\\backend']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [35644] using WatchFiles
+INFO:     Started server process [28620]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+Connected to MongoDB: vedic_astro_bot
+INFO:     127.0.0.1:56729 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53837 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53837 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49599 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "OPTIONS /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "PUT /user/profile/69ca4f78db65a5e465339cdd HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "DELETE /user/profile/69ca4f78db65a5e465339cdd HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54744 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54744 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54744 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54744 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54539 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54539 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54817 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54817 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52307 - "OPTIONS /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52307 - "OPTIONS /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52307 - "GET /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52307 - "GET /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54817 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54817 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54817 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54817 - "GET /user/profiles HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'app\services\astrology\panchang.py'. Reloading...
+INFO:     127.0.0.1:54908 - "OPTIONS /astro/today/panchang?lat=23.0233&lon=72.5555&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61096 - "OPTIONS /astro/today/panchang?lat=23.0233&lon=72.5555&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61096 - "GET /astro/today/panchang?lat=23.0233&lon=72.5555&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61096 - "GET /astro/today/panchang?lat=23.0233&lon=72.5555&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50401 - "GET /astro/today/panchang?lat=23.0233&lon=72.5555&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50401 - "GET /astro/today/panchang?lat=23.0233&lon=72.5555&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54981 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57699 - "OPTIONS /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59680 - "OPTIONS /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59680 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59680 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56958 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63951 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63951 - "GET /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63951 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63951 - "GET /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55426 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55426 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65250 - "OPTIONS /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65250 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65250 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53214 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53214 - "GET /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53214 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53214 - "GET /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53214 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53214 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58190 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58190 - "GET /astro/today/panchang?lat=23.0231&lon=72.5556&timezone=Asia%2FCalcutta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59737 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50621 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59330 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61925 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54952 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60226 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54797 - "OPTIONS /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54797 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54797 - "OPTIONS /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53386 - "OPTIONS /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60875 - "OPTIONS /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53386 - "GET /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60875 - "GET /astro/today/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54797 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60875 - "GET /user/profiles HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51174 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57384 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53797 - "GET /astro/today/panchang?lat=28.6139&lon=77.209&timezone=Asia/Kolkata HTTP/1.1" 200 OK

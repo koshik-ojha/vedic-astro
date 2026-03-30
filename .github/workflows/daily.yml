@@ -1,0 +1,14 @@
+name: Daily Horoscope Generator
+
+on:
+  schedule:
+    - cron: "35 18 * * *"  # 00:05 IST (UTC 18:35)
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call backend daily job
+        run: |
+          curl -X POST "${{ secrets.BACKEND_URL }}/jobs/generate_daily"             -H "X-Job-Secret: ${{ secrets.JOB_SECRET }}"

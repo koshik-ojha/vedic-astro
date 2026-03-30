@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/Scripts/python -c \":*)",
+      "Bash(.venv/Scripts/pip install:*)",
+      "Bash(find D:nextvedic-astro-botfrontend -type f \\\\\\(-name *.js -o -name *.jsx -o -name *.ts -o -name *.tsx -o -name *.json \\\\\\) ! -path */node_modules/* ! -path */.next/*)",
+      "Bash(find D:nextvedic-astro-botbackendapp -type f -name *.py ! -path */__pycache__/*)",
+      "Bash(\"D:\\\\next\\\\vedic-astro-bot\\\\backend\\\\app\\\\api\\\\auth.py\":*)",
+      "Bash(\"D:\\\\next\\\\vedic-astro-bot\\\\backend\\\\app\\\\api\\\\deps.py\":*)",
+      "Bash(ls:*)",
+      "Bash(.venv/Scripts/uvicorn app.main:app --reload --port 8000)",
+      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(npm install:*)",
+      "Bash(pip install:*)",
+      "Bash(python -c \":*)",
+      "Bash(python -c \"from app.main import app; print\\(''Backend imports OK''\\)\")",
+      "Bash(curl:*)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :8000)",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 27596 -Force\")",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 35292 -Force\")",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 27660 -Force\")",
+      "Bash(powershell.exe -Command \"Get-Process -Id 27596,27660,1224,35292 | Select-Object Id,Name,Path\" 2>&1)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(p\\) for p in sorted\\(d[''''paths''''].keys\\(\\)\\)]\")",
+      "Bash(powershell.exe -Command \"Get-Process -Id 1224 | Select-Object Id,Name,StartTime,CommandLine\" 2>&1)",
+      "Bash(powershell.exe -Command \"\n\\\\$p = Get-WmiObject Win32_Process -Filter 'ProcessId=1224'\n\\\\$p.CommandLine\n\" 2>&1)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(list\\(d[''''paths''''].keys\\(\\)\\), indent=2\\)\\)\")",
+      "Bash(powershell.exe -Command \"Get-NetTCPConnection -LocalPort 8000 -State Listen | Select-Object LocalAddress,LocalPort,OwningProcess | ForEach-Object { \\\\$proc = Get-Process -Id \\\\$_.OwningProcess -ErrorAction SilentlyContinue; [PSCustomObject]@{PID=\\\\$_.OwningProcess; Name=\\\\$proc.Name; Port=\\\\$_.LocalPort} }\" 2>&1)",
+      "Bash(powershell.exe -Command \"Get-Process python -ErrorAction SilentlyContinue | Select-Object Id,Name,StartTime\" 2>&1)",
+      "Bash(powershell.exe -Command \"\n\\\\$pids = @\\(27108, 31584, 34188, 34612, 36008\\)\nforeach \\(\\\\$id in \\\\$pids\\) {\n    try { Stop-Process -Id \\\\$id -Force; Write-Host \\\\\"Killed \\\\$id\\\\\" }\n    catch { Write-Host \\\\\"Skip \\\\$id\\\\\" }\n}\n\" 2>&1)",
+      "Bash(powershell.exe -Command \"Get-NetTCPConnection -LocalPort 8000 -State Listen | Select-Object OwningProcess\" 2>&1)",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 34784,17600 -Force -ErrorAction SilentlyContinue; Write-Host done\" 2>&1)",
+      "Bash(powershell.exe -Command \"Get-NetTCPConnection -LocalPort 8000 -State Listen | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Write-Host done\" 2>&1)",
+      "Bash(powershell.exe -Command \"\n\\\\$pids = \\(Get-NetTCPConnection -LocalPort 8000 -State Listen\\).OwningProcess\nforeach \\(\\\\$id in \\\\$pids\\) { Stop-Process -Id \\\\$id -Force -ErrorAction SilentlyContinue }\nWrite-Host 'Killed'\n\" 2>&1)",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 34784 -Force\")",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 17600 -Force\")",
+      "Bash(powershell.exe -Command \"Get-Process python | Select-Object Id,StartTime\" 2>&1)",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 28992 -Force; Stop-Process -Id 36472 -Force; Write-Host done\" 2>&1)",
+      "Bash(powershell.exe -Command \"Get-Process python | Stop-Process -Force; Write-Host done\" 2>&1)"
+    ]
+  }
+}
