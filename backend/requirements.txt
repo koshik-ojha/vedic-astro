@@ -1,6 +1,8 @@
 fastapi==0.115.6
 uvicorn[standard]==0.30.6
-pydantic==2.9.2
+
+pydantic[email]==2.10.6
+
 python-dotenv==1.0.1
 requests==2.32.3
 
@@ -11,6 +13,5 @@ passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 python-jose[cryptography]==3.3.0
 
-pydantic[email]
 ephem==4.2.1
 pytz==2024.1
