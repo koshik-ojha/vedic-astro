@@ -12,6 +12,7 @@ const navItems = [
   { href: "/daily", icon: MdWbSunny, label: "Daily Astrology" },
   { href: "/monthly", icon: MdCalendarMonth, label: "Monthly Astrology" },
   { href: "/panchang", icon: MdAutoAwesome, label: "Panchang" },
+  { href: "/vedic-panchang", icon: IoSparkles, label: "Vedic Panchang" },
   { href: "/profiles", icon: MdPeople, label: "Saved Profiles" },
 ];
 
