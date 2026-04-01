@@ -24,7 +24,7 @@ export default function DebugInfo() {
     }}>
       <strong>🔍 DEBUG INFO:</strong><br/>
       Backend URL: <strong>{backendUrl}</strong><br/>
-      Expected (Production): https://your-backend.onrender.com<br/>
+      Expected (Production): https://vedic-astro-backend-rox2.onrender.com/<br/>
       Expected (Local): http://localhost:8000<br/>
       {backendUrl.includes('localhost') && (
         <span style={{color: '#f00'}}>
