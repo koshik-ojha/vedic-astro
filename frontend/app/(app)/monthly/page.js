@@ -87,24 +87,24 @@ function MonthlyContent() {
   }
 
   return (
-    <div className="p-6 lg:p-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-          <MdCalendarMonth className="text-violet-500" size={32} />
+    <div className="p-4 sm:p-6 lg:p-10">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="mobile-header text-gray-800 flex items-center gap-2">
+          <MdCalendarMonth className="text-violet-500" size={28} />
           Monthly Astrology
         </h1>
-        <p className="text-gray-500 mt-1">
+        <p className="text-gray-500 mt-1 text-sm sm:text-base">
           {new Date().toLocaleString("default", { month: "long", year: "numeric" })} — celestial overview
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
         {/* Controls */}
         <div className="card">
-          <div className="flex gap-2 mb-6 p-1 bg-gray-100 rounded-xl">
+          <div className="flex gap-2 mb-4 sm:mb-6 p-1 bg-gray-100 rounded-xl">
             <button
               onClick={() => setMode("sunsign")}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex-1 py-2.5 sm:py-2 rounded-lg text-sm font-medium transition-all touch-target ${
                 mode === "sunsign" ? "bg-white text-indigo-700 shadow-sm" : "text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -112,7 +112,7 @@ function MonthlyContent() {
             </button>
             <button
               onClick={() => setMode("profile")}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex-1 py-2.5 sm:py-2 rounded-lg text-sm font-medium transition-all touch-target ${
                 mode === "profile" ? "bg-white text-indigo-700 shadow-sm" : "text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -139,7 +139,7 @@ function MonthlyContent() {
                 <select
                   value={selectedProfileId}
                   onChange={(e) => setSelectedProfileId(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white text-sm"
+                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white text-sm touch-target"
                 >
                   {profiles.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -154,7 +154,7 @@ function MonthlyContent() {
           <button
             onClick={getReading}
             disabled={loading}
-            className="w-full mt-6 py-3 bg-violet-600 hover:bg-violet-700 disabled:opacity-60 text-white font-semibold rounded-xl transition-colors"
+            className="w-full mt-4 sm:mt-6 py-3.5 sm:py-3 bg-violet-600 hover:bg-violet-700 disabled:opacity-60 text-white font-semibold rounded-xl transition-all touch-target active:scale-95"
           >
             {loading ? "Loading monthly forecast…" : "Get Monthly Forecast"}
           </button>

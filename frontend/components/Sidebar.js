@@ -88,28 +88,8 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile toggle */}
-      <button
-        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-indigo-700 text-white flex items-center justify-center shadow-lg"
-        onClick={() => setOpen(!open)}
-      >
-        {open ? <MdClose size={20} /> : <MdMenu size={20} />}
-      </button>
-
-      {/* Mobile backdrop */}
-      {open && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/40 z-30"
-          onClick={() => setOpen(false)}
-        />
-      )}
-
-      {/* Sidebar panel */}
-      <aside
-        className={`fixed top-0 left-0 h-full w-64 z-40 bg-gradient-to-b from-indigo-900 via-indigo-800 to-indigo-900 transition-transform duration-300 lg:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
+      {/* Sidebar panel - Hidden on mobile (using bottom nav instead) */}
+      <aside className="hidden lg:block fixed top-0 left-0 h-full w-64 z-40 bg-gradient-to-b from-indigo-900 via-indigo-800 to-indigo-900">
         <Content />
       </aside>
     </>

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { Sidebar } from "../../components/Sidebar";
+import { MobileBottomNav } from "../../components/MobileBottomNav";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -26,9 +27,10 @@ export default function AppLayout({ children }) {
   return (
     <div className="min-h-screen">
       <Sidebar />
-      <div className="lg:ml-64 min-h-screen">
+      <div className="lg:ml-64 min-h-screen mobile-page">
         {children}
       </div>
+      <MobileBottomNav />
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -40,6 +42,7 @@ export default function AppLayout({ children }) {
         draggable
         pauseOnHover
         theme="light"
+        className="mt-14 sm:mt-0"
       />
     </div>
   );

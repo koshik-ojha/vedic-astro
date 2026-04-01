@@ -388,7 +388,7 @@
 
 @layer components {
   .card {
-    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6;
+    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-4 sm:p-6;
   }
   
   .btn-primary {
@@ -401,6 +401,43 @@
   
   .input-field {
     @apply w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all duration-200 bg-white/70;
+  }
+
+  /* Mobile-optimized touch targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Mobile app safe area */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Mobile page container */
+  .mobile-page {
+    @apply pb-20 sm:pb-0;
+  }
+
+  /* Mobile heading styles */
+  .mobile-header {
+    @apply text-2xl sm:text-3xl font-bold;
+  }
+
+  /* Bottom navigation */
+  .bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-gray-200 safe-bottom lg:hidden z-50 shadow-lg;
+  }
+
+  .bottom-nav-item {
+    @apply flex flex-col items-center justify-center gap-1 py-2 px-3 text-gray-600 hover:text-indigo-600 transition-colors touch-target;
+  }
+
+  .bottom-nav-item.active {
+    @apply text-indigo-600;
   }
 }
 

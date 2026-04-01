@@ -29,19 +29,19 @@ function QualityBadge({ quality }) {
 
 function InfoCard({ icon: Icon, iconColor, bgGradient, label, value, sub, extra }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] ${bgGradient}`}>
-      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+    <div className={`relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${bgGradient}`}>
+      <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white/10 rounded-full -mr-12 -mt-12 sm:-mr-16 sm:-mt-16"></div>
       
       <div className="relative">
-        <div className={`w-12 h-12 rounded-xl ${iconColor} bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 shadow-lg`}>
-          <Icon size={24} className="text-white" />
+        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${iconColor} bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3 sm:mb-4 shadow-lg`}>
+          <Icon size={20} className="text-white sm:w-6 sm:h-6" />
         </div>
         
         <div>
-          <p className="text-xs font-bold text-white/80 uppercase tracking-wider mb-2">{label}</p>
-          <p className="text-xl font-bold text-white leading-tight mb-1">{value}</p>
-          {sub && <p className="text-sm text-white/90 font-medium">{sub}</p>}
-          {extra && <p className="text-xs text-white/70 mt-1">{extra}</p>}
+          <p className="text-xs font-bold text-white/80 uppercase tracking-wider mb-1 sm:mb-2">{label}</p>
+          <p className="text-lg sm:text-xl font-bold text-white leading-tight mb-1 truncate">{value}</p>
+          {sub && <p className="text-xs sm:text-sm text-white/90 font-medium truncate">{sub}</p>}
+          {extra && <p className="text-xs text-white/70 mt-1 truncate">{extra}</p>}
         </div>
       </div>
     </div>
@@ -147,25 +147,25 @@ export default function VedicPanchangPage() {
   };
 
   return (
-    <div className="p-6 lg:p-10">
+    <div className="p-4 sm:p-6 lg:p-10">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-            <MdAutoAwesome className="text-white" size={24} />
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+            <MdAutoAwesome className="text-white" size={20} />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Vedic Panchang</h1>
-            <p className="text-sm text-gray-500">Detailed Vedic Calendar Information</p>
+            <h1 className="mobile-header text-gray-800">Vedic Panchang</h1>
+            <p className="text-xs sm:text-sm text-gray-500">Detailed Vedic Calendar Information</p>
           </div>
         </div>
       </div>
 
       {/* Input Form */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Enter Details</h2>
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">Enter Details</h2>
         
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           {/* Date */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
@@ -183,7 +183,7 @@ export default function VedicPanchangPage() {
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary touch-target"
             />
           </div>
 
@@ -199,7 +199,7 @@ export default function VedicPanchangPage() {
         </div>
 
         {/* Coordinates Display */}
-        <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-gray-500 mb-4">
           <span>Latitude: {lat.toFixed(4)}°</span>
           <span>Longitude: {lng.toFixed(4)}°</span>
         </div>
@@ -208,7 +208,7 @@ export default function VedicPanchangPage() {
         <Button
           onClick={handleFetchPanchang}
           disabled={loading}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto touch-target"
         >
           {loading ? "Fetching..." : "Get Panchang"}
         </Button>
@@ -232,18 +232,18 @@ export default function VedicPanchangPage() {
 
       {/* Results */}
       {data && !loading && (
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {/* Date Display */}
           <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 border border-purple-100">
-            <p className="text-sm text-gray-600 flex items-center gap-2">
+            <p className="text-xs sm:text-sm text-gray-600 flex flex-wrap items-center gap-2">
               <MdCalendarToday size={16} />
               <span className="font-semibold">{formatDate()}</span>
-              <span className="mx-2">•</span>
+              <span className="mx-1 hidden sm:inline">•</span>
               <MdAccessTime size={16} />
               <span>{time}</span>
-              <span className="mx-2">•</span>
+              <span className="mx-1 hidden sm:inline">•</span>
               <MdLocationCity size={16} />
-              <span>{data.metadata?.location || city}</span>
+              <span className="truncate">{data.metadata?.location || city}</span>
             </p>
           </div>
 

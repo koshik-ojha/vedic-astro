@@ -60,21 +60,22 @@ export default function ProfilesPage() {
   }
 
   return (
-    <div className="p-6 lg:p-10">
+    <div className="p-4 sm:p-6 lg:p-10">
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Saved Profiles</h1>
-          <p className="text-gray-500 mt-1">
+      <div className="flex items-start justify-between mb-6 sm:mb-8 gap-3">
+        <div className="min-w-0">
+          <h1 className="mobile-header text-gray-800">Saved Profiles</h1>
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">
             Manage birth profiles for personalised readings
           </p>
         </div>
         <button
           onClick={openAddModal}
-          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-colors text-sm shrink-0"
+          className="flex items-center gap-2 px-3 sm:px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white rounded-xl font-medium transition-all text-sm shrink-0 touch-target shadow-md"
         >
           <MdAdd size={19} />
-          Add Profile
+          <span className="hidden sm:inline">Add Profile</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
@@ -84,21 +85,21 @@ export default function ProfilesPage() {
           <div className="w-9 h-9 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" />
         </div>
       ) : profiles.length === 0 ? (
-        <div className="card text-center py-16">
-          <MdPerson size={56} className="text-gray-300 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-gray-700 mb-2">No profiles yet</h3>
-          <p className="text-gray-500 mb-6 text-sm">
+        <div className="card text-center py-12 sm:py-16">
+          <MdPerson size={48} className="text-gray-300 mx-auto mb-4 sm:w-14 sm:h-14" />
+          <h3 className="text-lg sm:text-xl font-bold text-gray-700 mb-2">No profiles yet</h3>
+          <p className="text-gray-500 mb-6 text-sm px-4">
             Add a birth profile to get personalised astrological readings
           </p>
           <button
             onClick={openAddModal}
-            className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
+            className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 active:scale-95 transition-all touch-target"
           >
             Add Your First Profile
           </button>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {profiles.map((profile) => (
             <ProfileCard
               key={profile.id}
@@ -134,7 +135,7 @@ export default function ProfilesPage() {
 
 function ProfileCard({ profile, onEdit, onDelete }) {
   return (
-    <div className="card hover:shadow-xl transition-shadow duration-200">
+    <div className="card hover:shadow-xl transition-all duration-200 active:scale-[0.98]">
       <div className="flex items-start justify-between mb-4">
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xl font-bold shadow-sm">
           {profile.profile_name?.[0]?.toUpperCase() || "P"}
@@ -142,14 +143,14 @@ function ProfileCard({ profile, onEdit, onDelete }) {
         <div className="flex gap-1">
           <button
             onClick={onEdit}
-            className="text-gray-300 hover:text-indigo-600 transition-colors p-1 rounded-lg hover:bg-indigo-50"
+            className="text-gray-300 hover:text-indigo-600 active:scale-90 transition-all p-2 rounded-lg hover:bg-indigo-50 touch-target"
             title="Edit profile"
           >
             <MdEdit size={19} />
           </button>
           <button
             onClick={onDelete}
-            className="text-gray-300 hover:text-red-500 transition-colors p-1 rounded-lg hover:bg-red-50"
+            className="text-gray-300 hover:text-red-500 active:scale-90 transition-all p-2 rounded-lg hover:bg-red-50 touch-target"
             title="Delete profile"
           >
             <MdDelete size={19} />
@@ -157,12 +158,12 @@ function ProfileCard({ profile, onEdit, onDelete }) {
         </div>
       </div>
 
-      <h3 className="font-bold text-gray-800 text-lg mb-3">{profile.profile_name}</h3>
+      <h3 className="font-bold text-gray-800 text-lg mb-3 truncate">{profile.profile_name}</h3>
 
       <div className="space-y-2 mb-5">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <MdCalendarMonth size={15} className="text-indigo-400 shrink-0" />
-          <span>{profile.dob}</span>
+          <span className="truncate">{profile.dob}</span>
           {profile.tob && <span className="text-gray-400">· {profile.tob}</span>}
         </div>
         {profile.place_name && (
@@ -175,13 +176,13 @@ function ProfileCard({ profile, onEdit, onDelete }) {
 
       <div className="grid grid-cols-2 gap-2">
         <Link href={`/daily?profile_id=${profile.id}`}>
-          <button className="w-full py-2 text-xs bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg font-semibold transition-colors flex items-center justify-center gap-1.5">
+          <button className="w-full py-2.5 sm:py-2 text-xs bg-orange-50 hover:bg-orange-100 active:bg-orange-200 text-orange-700 rounded-lg font-semibold transition-all flex items-center justify-center gap-1.5 touch-target">
             <MdWbSunny size={14} />
             Daily
           </button>
         </Link>
         <Link href={`/monthly?profile_id=${profile.id}`}>
-          <button className="w-full py-2 text-xs bg-violet-50 hover:bg-violet-100 text-violet-700 rounded-lg font-semibold transition-colors flex items-center justify-center gap-1.5">
+          <button className="w-full py-2.5 sm:py-2 text-xs bg-violet-50 hover:bg-violet-100 active:bg-violet-200 text-violet-700 rounded-lg font-semibold transition-all flex items-center justify-center gap-1.5 touch-target">
             <MdCalendarMonth size={14} />
             Monthly
           </button>
