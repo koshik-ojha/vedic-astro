@@ -22,7 +22,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await signup(form.email, form.name, form.password);
-      router.push("/");
+      router.push("/dashboard");
     } catch (err) {
       setError(err.message);
     } finally {

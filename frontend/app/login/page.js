@@ -18,7 +18,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(form.email, form.password);
-      router.push("/");
+      router.push("/dashboard");
     } catch (err) {
       setError(err.message);
     } finally {
