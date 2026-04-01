@@ -24,7 +24,7 @@ const ZODIAC = [
 ];
 
 async function fetchSunSignHoroscope(sign) {
-  const res = await fetch(`/api/horoscope/daily?sign=${encodeURIComponent(sign)}`);
+  const res = await fetch(`/api/horoscope/weekly?sign=${encodeURIComponent(sign)}`);
   if (!res.ok) throw new Error(`Horoscope error: ${res.status} ${res.statusText}`);
   const json = await res.json();
   const d = json.data;
@@ -90,12 +90,12 @@ function DailyContent() {
     <div className="p-4 sm:p-6 lg:p-10">
       <div className="mb-6 sm:mb-8">
         <h1 className="mobile-header text-gray-800 flex items-center gap-2">
-          Daily Horoscope — personalised insights
+          Weekly Horoscope — personalised insights
         </h1>
         <p className="text-gray-500 mt-1 text-sm sm:text-base">
-          This daily cosmic insights, personalised for you
+          This week&apos;s cosmic insights, personalised for you
         </p>
-      </div>
+      </div>       
 
       <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
         <div className="card">

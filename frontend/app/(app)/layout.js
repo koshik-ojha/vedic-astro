@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import { LanguageProvider } from "../../context/LanguageContext";
 import { Sidebar } from "../../components/Sidebar";
 import { MobileBottomNav } from "../../components/MobileBottomNav";
 import { ToastContainer } from "react-toastify";
@@ -25,25 +26,27 @@ export default function AppLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen">
-      <Sidebar />
-      <div className="lg:ml-64 min-h-screen mobile-page">
-        {children}
+    <LanguageProvider>
+      <div className="min-h-screen">
+        <Sidebar />
+        <div className="lg:ml-64 min-h-screen mobile-page">
+          {children}
+        </div>
+        <MobileBottomNav />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          className="mt-14 sm:mt-0"
+        />
       </div>
-      <MobileBottomNav />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        className="mt-14 sm:mt-0"
-      />
-    </div>
+    </LanguageProvider>
   );
 }

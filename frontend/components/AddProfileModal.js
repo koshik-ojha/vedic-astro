@@ -7,6 +7,21 @@ import { LocationInput } from "./LocationInput";
 import { apiFetch } from "../lib/api";
 import { toast } from "react-toastify";
 
+const ZODIAC = [
+  { value: "aries", label: "Aries (मेष)" },
+  { value: "taurus", label: "Taurus (वृषभ)" },
+  { value: "gemini", label: "Gemini (मिथुन)" },
+  { value: "cancer", label: "Cancer (कर्क)" },
+  { value: "leo", label: "Leo (सिंह)" },
+  { value: "virgo", label: "Virgo (कन्या)" },
+  { value: "libra", label: "Libra (तुला)" },
+  { value: "scorpio", label: "Scorpio (वृश्चिक)" },
+  { value: "sagittarius", label: "Sagittarius (धनु)" },
+  { value: "capricorn", label: "Capricorn (मकर)" },
+  { value: "aquarius", label: "Aquarius (कुंभ)" },
+  { value: "pisces", label: "Pisces (मीन)" },
+];
+
 const EMPTY_FORM = {
   profile_name: "",
   dob: "2000-01-01",
@@ -168,6 +183,27 @@ export default function AddProfileModal({ isOpen, onClose, onProfileAdded, editP
               </label>
               <TimeInput value={form.tob} onChange={(v) => setForm({ ...form, tob: v })} />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              Sun Sign (Zodiac)
+            </label>
+            <select
+              value={form.sun_sign}
+              onChange={(e) => setForm({ ...form, sun_sign: e.target.value })}
+              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white text-sm"
+            >
+              <option value="">Select Sun Sign</option>
+              {ZODIAC.map((sign) => (
+                <option key={sign.value} value={sign.value}>
+                  {sign.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Required for daily horoscope readings
+            </p>
           </div>
 
           <div>

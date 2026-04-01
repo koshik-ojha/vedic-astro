@@ -3,24 +3,27 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { MdDashboard, MdWbSunny, MdCalendarMonth, MdPeople, MdLogout, MdMenu, MdClose, MdAutoAwesome } from "react-icons/md";
+import { MdDashboard, MdWbSunny, MdCalendarMonth, MdCalendarToday, MdPeople, MdLogout, MdMenu, MdClose, MdAutoAwesome } from "react-icons/md";
 import { IoSparkles } from "react-icons/io5";
 import { useAuth } from "../context/AuthContext";
-
-const navItems = [
-  { href: "/dashboard", icon: MdDashboard, label: "Dashboard" },
-  { href: "/daily", icon: MdWbSunny, label: "Daily Astrology" },
-  { href: "/monthly", icon: MdCalendarMonth, label: "Monthly Astrology" },
-  { href: "/panchang", icon: MdAutoAwesome, label: "Panchang" },
-  { href: "/vedic-panchang", icon: IoSparkles, label: "Vedic Panchang" },
-  { href: "/profiles", icon: MdPeople, label: "Saved Profiles" },
-];
+import { useLanguage } from "../context/LanguageContext";
 
 export function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  
+  const navItems = [
+    { href: "/dashboard", icon: MdDashboard, label: t("dashboard") },
+    { href: "/daily", icon: MdWbSunny, label: t("dailyHoroscope") },
+    { href: "/weekly", icon: MdCalendarToday, label: t("weeklyHoroscope") },
+    { href: "/monthly", icon: MdCalendarMonth, label: t("monthlyHoroscope") },
+    { href: "/panchang", icon: MdAutoAwesome, label: t("panchang") },
+    { href: "/vedic-panchang", icon: IoSparkles, label: t("vedicPanchang") },
+    { href: "/profiles", icon: MdPeople, label: t("savedProfiles") },
+  ];
 
   function handleLogout() {
     logout();
@@ -37,7 +40,7 @@ export function Sidebar() {
           </div>
           <div>
             <p className="font-bold text-white text-base leading-tight">Vedic Astro</p>
-            <p className="text-white/50 text-xs">Your cosmic guide</p>
+            <p className="text-white/50 text-xs">{t("yourCosmicGuide")}</p>
           </div>
         </div>
       </div>
@@ -80,7 +83,7 @@ export function Sidebar() {
           className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-white/65 hover:bg-white/10 hover:text-white transition-all text-sm"
         >
           <MdLogout size={18} />
-          Log out
+          {t("logout")}
         </button>
       </div>
     </div>

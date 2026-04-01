@@ -172,6 +172,12 @@ function ProfileCard({ profile, onEdit, onDelete }) {
             <span className="truncate">{profile.place_name}</span>
           </div>
         )}
+        {profile.sun_sign && (
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <MdWbSunny size={15} className="text-orange-400 shrink-0" />
+            <span className="capitalize truncate">{profile.sun_sign}</span>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-2">

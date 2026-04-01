@@ -2,18 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MdDashboard, MdWbSunny, MdCalendarMonth, MdPeople, MdAutoAwesome } from "react-icons/md";
-
-const navItems = [
-  { href: "/dashboard", icon: MdDashboard, label: "Home" },
-  { href: "/daily", icon: MdWbSunny, label: "Daily" },
-  { href: "/panchang", icon: MdAutoAwesome, label: "Panchang" },
-  { href: "/monthly", icon: MdCalendarMonth, label: "Monthly" },
-  { href: "/profiles", icon: MdPeople, label: "Profiles" },
-];
+import { MdDashboard, MdWbSunny, MdCalendarToday, MdCalendarMonth, MdPeople, MdAutoAwesome } from "react-icons/md";
+import { useLanguage } from "../context/LanguageContext";
 
 export function MobileBottomNav() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+  
+  const navItems = [
+    { href: "/dashboard", icon: MdDashboard, label: t("home") },
+    { href: "/daily", icon: MdWbSunny, label: t("daily") },
+    { href: "/weekly", icon: MdCalendarToday, label: t("weekly") },
+    { href: "/panchang", icon: MdAutoAwesome, label: t("panchang") },
+    { href: "/monthly", icon: MdCalendarMonth, label: t("monthly") },
+    { href: "/profiles", icon: MdPeople, label: t("profiles") },
+  ];
 
   return (
     <nav className="bottom-nav">
