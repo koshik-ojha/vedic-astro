@@ -6,7 +6,7 @@ export default function DebugInfo() {
     return null; // Don't show in production after testing
   }
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://vedic-astro-backend-rox2.onrender.com";
   
   return (
     <div style={{
@@ -25,7 +25,7 @@ export default function DebugInfo() {
       <strong>🔍 DEBUG INFO:</strong><br/>
       Backend URL: <strong>{backendUrl}</strong><br/>
       Expected (Production): https://vedic-astro-backend-rox2.onrender.com/<br/>
-      Expected (Local): http://localhost:8000<br/>
+      Expected (Local): https://vedic-astro-backend-rox2.onrender.com<br/>
       {backendUrl.includes('localhost') && (
         <span style={{color: '#f00'}}>
           ⚠️ WARNING: Using localhost in production! Set NEXT_PUBLIC_BACKEND_URL in Vercel!

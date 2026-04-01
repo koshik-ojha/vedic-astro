@@ -15,7 +15,7 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_WEBHOOK_SECRET = os.getenv("TELEGRAM_WEBHOOK_SECRET", "change-me")
 
 # App Configuration
-APP_BASE_URL = os.getenv("APP_BASE_URL", "http://localhost:8000")
+APP_BASE_URL = os.getenv("APP_BASE_URL", "https://vedic-astro-backend-rox2.onrender.com")
 
 # JWT Configuration
 JWT_SECRET = os.getenv("JWT_SECRET", "change-this-secret-in-production")

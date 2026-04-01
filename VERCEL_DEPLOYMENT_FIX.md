@@ -1,7 +1,7 @@
 # VERCEL DEPLOYMENT FIX - CHECKLIST
 
 ## ❌ Problem
-Frontend on Vercel is trying to connect to `localhost:8000` instead of production backend
+Frontend on Vercel is trying to connect to `https://vedic-astro-backend-rox2.onrender.com` instead of production backend
 
 ## ✅ Solution Checklist
 

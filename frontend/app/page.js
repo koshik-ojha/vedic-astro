@@ -38,7 +38,7 @@ export default function Home() {
     setSubmitError("");
 
     try {
-      const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "https://vedic-astro-backend-rox2.onrender.com";
       const response = await fetch(`${BACKEND}/contact/submit`, {
         method: "POST",
         headers: {

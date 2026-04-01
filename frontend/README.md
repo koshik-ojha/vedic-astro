@@ -9,6 +9,6 @@ npm run dev
 ```
 
 Set `.env.local`:
-- `NEXT_PUBLIC_BACKEND_URL=http://localhost:8000`
+- `NEXT_PUBLIC_BACKEND_URL=https://vedic-astro-backend-rox2.onrender.com`
 
 Open http://localhost:3000

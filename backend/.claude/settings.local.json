@@ -9,7 +9,7 @@
       "Bash(\"D:\\\\next\\\\vedic-astro-bot\\\\backend\\\\app\\\\api\\\\deps.py\":*)",
       "Bash(ls:*)",
       "Bash(.venv/Scripts/uvicorn app.main:app --reload --port 8000)",
-      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(curl -s https://vedic-astro-backend-rox2.onrender.com/health)",
       "Bash(npm install:*)",
       "Bash(pip install:*)",
       "Bash(python -c \":*)",
