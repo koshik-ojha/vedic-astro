@@ -28,6 +28,7 @@ allowed_origins = [
     "http://localhost:3000",
     "http://localhost:3001",
     "https://vedic-astro-phi.vercel.app",
+    "https://*.vercel.app",  # Allow all Vercel preview deployments
 ]
 
 app.add_middleware(
@@ -36,6 +37,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Regex for Vercel subdomains
 )
 
 app.include_router(health_router)

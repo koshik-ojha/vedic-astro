@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
+import DebugInfo from "../../components/DebugInfo";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -323,6 +324,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+      <DebugInfo />
     </>
   );
 }
