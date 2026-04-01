@@ -36,7 +36,9 @@
       "Bash(powershell.exe -Command \"Stop-Process -Id 17600 -Force\")",
       "Bash(powershell.exe -Command \"Get-Process python | Select-Object Id,StartTime\" 2>&1)",
       "Bash(powershell.exe -Command \"Stop-Process -Id 28992 -Force; Stop-Process -Id 36472 -Force; Write-Host done\" 2>&1)",
-      "Bash(powershell.exe -Command \"Get-Process python | Stop-Process -Force; Write-Host done\" 2>&1)"
+      "Bash(powershell.exe -Command \"Get-Process python | Stop-Process -Force; Write-Host done\" 2>&1)",
+      "Bash(pip show:*)",
+      "Bash(python:*)"
     ]
   }
 }

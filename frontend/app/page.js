@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 import Link from "next/link";
-import { FaSun, FaCalendarAlt, FaStar, FaUser, FaScroll, FaBolt, FaGlobe, FaStarOfDavid, FaHeart, FaPhone, FaTrophy, FaLock, FaMobileAlt, FaSpa, FaComments, FaPencilAlt, FaBinoculars, FaBook, FaSeedling, FaEnvelope, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaSun, FaCalendarAlt, FaStar, FaUser, FaScroll, FaBolt, FaGlobe, FaStarOfDavid, FaHeart, FaPhone, FaTrophy, FaLock, FaMobileAlt, FaSpa, FaComments, FaPencilAlt, FaBinoculars, FaBook, FaSeedling, FaEnvelope, FaClock, FaMapMarkerAlt, FaTwitter, FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
 import { MdWbSunny } from 'react-icons/md';
 import { GiCrystalBall, GiSparkles, GiFlowerEmblem, GiFire, GiMoon, GiTwirlyFlower } from 'react-icons/gi';
 
@@ -23,6 +23,8 @@ export default function Home() {
     name: "", email: "", phone: "", message: "", service: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -30,9 +32,38 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    try {
+      const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const response = await fetch(`${BACKEND}/contact/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitted(true);
+        // Reset form
+        setFormData({
+          name: "", email: "", phone: "", message: "", service: "",
+        });
+      } else {
+        setSubmitError(data.detail || "Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setSubmitError("Network error. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const navLinks = ["Features", "About", "Testimonials", "Pricing", "Contact"];
@@ -628,9 +659,9 @@ export default function Home() {
             </p>
             {[
               { icon: <FaEnvelope />, label: "Email", val: "hello@vedicastro.app" },
-              { icon: <FaPhone />, label: "Phone", val: "+91 98765 43210" },
+              { icon: <FaPhone />, label: "Phone", val: "+91 8128305710" },
               { icon: <FaClock />, label: "Support Hours", val: "Mon–Sat, 9 AM – 7 PM IST" },
-              { icon: <FaMapMarkerAlt />, label: "Office", val: "Bengaluru, Karnataka, India" },
+              { icon: <FaMapMarkerAlt />, label: "Office", val: "Ahmedabad, Gujarat, India" },
             ].map(c => (
               <div key={c.label} style={{ display: "flex", gap: 16, marginBottom: 22, alignItems: "center" }}>
                 <div style={{ width: 46, height: 46, borderRadius: 13, background: "linear-gradient(135deg,rgba(124,58,237,.28),rgba(236,72,153,.18))", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem", flexShrink: 0 }}>{c.icon}</div>
@@ -641,10 +672,10 @@ export default function Home() {
               </div>
             ))}
             <div style={{ marginTop: 32, display: "flex", gap: 12 }}>
-              {["𝕏 Twitter", "📘 Facebook", "📸 Instagram", "▶ YouTube"].map((s, i) => (
-                <div key={i} style={{ padding: "8px 14px", borderRadius: 10, background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.1)", cursor: "pointer", fontSize: ".74rem", color: "rgba(255,255,255,.55)", transition: "background .2s" }}
+              {[<FaTwitter />, <FaFacebookF />, <FaInstagram />, <FaYoutube />].map((icon, i) => (
+                <div key={i} style={{ padding: "10px 12px", borderRadius: 10, background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.1)", cursor: "pointer", fontSize: "1.1rem", color: "rgba(255,255,255,.55)", transition: "background .2s", display: "flex", alignItems: "center", justifyContent: "center" }}
                   onMouseEnter={e => (e.currentTarget.style.background = "rgba(124,58,237,.3)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,.06)")}>{s}</div>
+                  onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,.06)")}>{icon}</div>
               ))}
             </div>
           </div>
@@ -658,7 +689,7 @@ export default function Home() {
                 <p style={{ ...S.bodyText, fontSize: ".9rem" }}>
                   Thank you for reaching out. Our team will respond within 24 hours. The cosmos is already aligning in your favour. <FaStar style={{ fontSize: ".8rem", display: "inline" }} />
                 </p>
-                <button className="btnPrimary" style={{ marginTop: 24 }} onClick={() => setSubmitted(false)}>
+                <button className="btnPrimary" style={{ marginTop: 24 }} onClick={() => { setSubmitted(false); setSubmitError(""); }}>
                   <span>Send Another Message</span>
                 </button>
               </div>
@@ -666,24 +697,32 @@ export default function Home() {
               <>
                 <h3 style={{ color: "#fff", fontWeight: 600, fontSize: "1.15rem", marginBottom: 4 }}>Send Us a Message</h3>
                 <p style={{ ...S.bodyText, fontSize: ".82rem", marginBottom: 28 }}>We typically respond within a few hours.</p>
+                
+                {submitError && (
+                  <div style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.4)", borderRadius: 12, padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ color: "#fca5a5", fontSize: "1.1rem" }}>⚠</span>
+                    <p style={{ color: "#fca5a5", fontSize: ".85rem" }}>{submitError}</p>
+                  </div>
+                )}
+                
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                     <div>
                       <label style={{ color: "rgba(255,255,255,.5)", fontSize: ".72rem", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", display: "block", marginBottom: 8 }}>Full Name *</label>
-                      <input required className="inp" placeholder="Arjun Sharma" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                      <input required className="inp" placeholder="Arjun Sharma" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} disabled={isSubmitting} />
                     </div>
                     <div>
                       <label style={{ color: "rgba(255,255,255,.5)", fontSize: ".72rem", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", display: "block", marginBottom: 8 }}>Phone</label>
-                      <input className="inp" placeholder="+91 98765 43210" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
+                      <input className="inp" placeholder="+91 98765 43210" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} disabled={isSubmitting} />
                     </div>
                   </div>
                   <div>
                     <label style={{ color: "rgba(255,255,255,.5)", fontSize: ".72rem", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", display: "block", marginBottom: 8 }}>Email Address *</label>
-                    <input required type="email" className="inp" placeholder="arjun@example.com" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
+                    <input required type="email" className="inp" placeholder="arjun@example.com" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} disabled={isSubmitting} />
                   </div>
                   <div>
                     <label style={{ color: "rgba(255,255,255,.5)", fontSize: ".72rem", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", display: "block", marginBottom: 8 }}>Service Interested In</label>
-                    <select className="inp" style={{ appearance: "none" }} value={formData.service} onChange={e => setFormData({ ...formData, service: e.target.value })}>
+                    <select className="inp" style={{ appearance: "none" }} value={formData.service} onChange={e => setFormData({ ...formData, service: e.target.value })} disabled={isSubmitting}>
                       <option value="" style={{ background: "#1a0533" }}>Select a service…</option>
                       <option value="daily" style={{ background: "#1a0533" }}>Daily / Monthly Readings</option>
                       <option value="kundali" style={{ background: "#1a0533" }}>Birth Chart Analysis</option>
@@ -694,10 +733,10 @@ export default function Home() {
                   </div>
                   <div>
                     <label style={{ color: "rgba(255,255,255,.5)", fontSize: ".72rem", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", display: "block", marginBottom: 8 }}>Your Message *</label>
-                    <textarea required className="inp" rows={4} placeholder="Tell us what you are looking for, or ask us anything about Vedic astrology…" style={{ resize: "vertical", minHeight: 110 }} value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} />
+                    <textarea required className="inp" rows={4} placeholder="Tell us what you are looking for, or ask us anything about Vedic astrology…" style={{ resize: "vertical", minHeight: 110 }} value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} disabled={isSubmitting} />
                   </div>
-                  <button type="submit" className="btnPrimary" style={{ width: "100%", justifyContent: "center", fontSize: ".95rem", padding: 15 }}>
-                    <span>Send Message ✦</span>
+                  <button type="submit" className="btnPrimary" style={{ width: "100%", justifyContent: "center", fontSize: ".95rem", padding: 15, opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "not-allowed" : "pointer" }} disabled={isSubmitting}>
+                    <span>{isSubmitting ? "Sending..." : "Send Message ✦"}</span>
                   </button>
                 </form>
               </>
@@ -742,7 +781,7 @@ export default function Home() {
               </div>
               <p style={{ ...S.bodyText, fontSize: ".83rem", maxWidth: 270 }}>Authentic Vedic astrology for the modern seeker. Read the stars. Know thyself.</p>
               <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
-                {["𝕏", "📘", "📸", "▶"].map((icon, i) => (
+                {[<FaTwitter />, <FaFacebookF />, <FaInstagram />, <FaYoutube />].map((icon, i) => (
                   <div key={i} style={{ width: 34, height: 34, borderRadius: 8, background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.1)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: ".9rem", transition: "background .2s" }}
                     onMouseEnter={e => (e.currentTarget.style.background = "rgba(124,58,237,.3)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,.07)")}>{icon}</div>

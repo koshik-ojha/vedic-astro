@@ -8,6 +8,7 @@ from app.api.user import router as user_router
 from app.api.astro import router as astro_router
 from app.api.telegram import router as telegram_router
 from app.api.jobs import router as jobs_router
+from app.api.contact import router as contact_router
 from app.db import connect_db, disconnect_db
 
 
@@ -37,3 +38,4 @@ app.include_router(user_router, prefix="/user", tags=["user"])
 app.include_router(astro_router, prefix="/astro", tags=["astro"])
 app.include_router(telegram_router, prefix="/telegram", tags=["telegram"])
 app.include_router(jobs_router, prefix="/jobs", tags=["jobs"])
+app.include_router(contact_router, prefix="/contact", tags=["contact"]) 
