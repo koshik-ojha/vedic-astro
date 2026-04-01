@@ -276,10 +276,12 @@ export default function Home() {
       <nav className={scrolled ? "navSolid" : ""}
         style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, transition: "all .3s", backdropFilter: scrolled ? "blur(24px)" : "none" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", height: 68, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Link href="/" style={{ textDecoration: "none" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(135deg,#7c3aed,#ec4899)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}><FaStar /></div>
             <span className="display" style={{ fontSize: "1.2rem", fontWeight: 700, color: "#fff", letterSpacing: ".04em" }}>Vedic Astro</span>
           </div>
+          </Link>
           <div className="hideM" style={{ display: "flex", gap: 30 }}>
             {navLinks.map(l => (
               <a key={l} href={`#${l.toLowerCase()}`}
