@@ -14,7 +14,22 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-uvicorn app.main:app --reload --port 8000
+
+# Start the server using one of these methods:
+
+# Method 1: Using the startup script (Windows)
+.\start.ps1
+
+# Method 2: Using the startup script (Linux/Mac)
+chmod +x start.sh
+./start.sh
+
+# Method 3: Manual command
+# Windows PowerShell:
+$env:PYTHONPATH = "$pwd"; python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+# Linux/Mac:
+PYTHONPATH=$(pwd) python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ## Notes

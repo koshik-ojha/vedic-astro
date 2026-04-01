@@ -24,9 +24,15 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Vedic Astrology Bot API", version="0.1.0", lifespan=lifespan)
 
 # CORS for local dev + Vercel frontend
+allowed_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://vedic-astro-phi.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # tighten for production
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
