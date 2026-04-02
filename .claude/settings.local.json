@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"from app.api.astro import router; print\\('Router loaded OK'\\); print\\([r.path for r in router.routes]\\)\")",
+      "Bash(Scripts/python.exe -c \"from app.api.astro import router; print\\('Router loaded OK'\\); print\\([r.path for r in router.routes]\\)\")",
+      "Bash(cmd:*)"
+    ]
+  }
+}

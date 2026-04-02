@@ -4,146 +4,56 @@ import { useState } from "react";
 import { DateInput } from "../../../components/DateInput";
 import { LocationInput } from "../../../components/LocationInput";
 import { Button } from "../../../components/ui/Button";
-import {
-  MdAutoAwesome, MdWbSunny, MdNightsStay, MdLocationOn,
-  MdStar, MdCircle, MdWbTwilight, MdSelfImprovement,
-  MdCalendarToday, MdDarkMode, MdLightMode, MdWbCloudy,
-  MdAccessTime, MdLocationCity,
-} from "react-icons/md";
-
-const QUALITY_COLORS = {
-  Excellent: "bg-emerald-100 text-emerald-800 border-emerald-200",
-  Good: "bg-blue-100 text-blue-800 border-blue-200",
-  Beneficial: "bg-sky-100 text-sky-800 border-sky-200",
-  Neutral: "bg-gray-100 text-gray-700 border-gray-200",
-  Inauspicious: "bg-red-100 text-red-700 border-red-200",
-};
-
-function QualityBadge({ quality }) {
-  return (
-    <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${QUALITY_COLORS[quality] || QUALITY_COLORS.Neutral}`}>
-      {quality}
-    </span>
-  );
-}
-
-function InfoCard({ icon: Icon, iconColor, bgGradient, label, value, sub, extra }) {
-  return (
-    <div className={`relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${bgGradient}`}>
-      <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white/10 rounded-full -mr-12 -mt-12 sm:-mr-16 sm:-mt-16"></div>
-      
-      <div className="relative">
-        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${iconColor} bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3 sm:mb-4 shadow-lg`}>
-          <Icon size={20} className="text-white sm:w-6 sm:h-6" />
-        </div>
-        
-        <div>
-          <p className="text-xs font-bold text-white/80 uppercase tracking-wider mb-1 sm:mb-2">{label}</p>
-          <p className="text-lg sm:text-xl font-bold text-white leading-tight mb-1 truncate">{value}</p>
-          {sub && <p className="text-xs sm:text-sm text-white/90 font-medium truncate">{sub}</p>}
-          {extra && <p className="text-xs text-white/70 mt-1 truncate">{extra}</p>}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TimeRangeCard({ icon: Icon, label, start, end, available, bgGradient }) {
-  return (
-    <div className={`relative overflow-hidden rounded-xl p-5 shadow-md ${bgGradient || "bg-gradient-to-br from-gray-600 to-gray-800"}`}>
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-          <Icon size={20} className="text-white" />
-        </div>
-        <div className="flex-1">
-          <p className="text-xs font-bold text-white/90 uppercase tracking-wider">{label}</p>
-          {available !== false ? (
-            <p className="text-lg font-bold text-white mt-0.5">{start} - {end}</p>
-          ) : (
-            <p className="text-sm text-white/70 mt-0.5">Not available</p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function VedicPanchangPage() {
+  const [date, setDate] = useState("");
+  const [locationText, setLocationText] = useState("");
+  const [location, setLocation] = useState({ city: "", lat: "", lon: "", timezone: "" });
+  const [panchang, setPanchang] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [data, setData] = useState(null);
-  
-  // Form inputs
-  const [date, setDate] = useState(() => {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  });
-  const [time, setTime] = useState(() => {
-    const now = new Date();
-    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-  });
-  const [city, setCity] = useState("Mumbai");
-  const [lat, setLat] = useState(19.0760);
-  const [lng, setLng] = useState(72.8777);
 
-  const handleLocationSelect = (location) => {
-    setCity(location.place_name.split(',')[0]);
-    setLat(location.lat);
-    setLng(location.lon);
+  const handleLocationSelect = (loc) => {
+    setLocation({
+      city: loc.place_name,
+      lat: loc.lat,
+      lon: loc.lon,
+      timezone: "Asia/Kolkata" // Default for India
+    });
+    setError(""); // Clear error when location is selected
   };
 
-  const handleFetchPanchang = async () => {
+  const handleCalculate = async () => {
+    if (!date || !location.lat || !location.lon) {
+      setError("Please enter date and location");
+      return;
+    }
+
     setLoading(true);
     setError("");
-    
-    try {
-      const [year, month, day] = date.split('-').map(Number);
-      const [hour, minute] = time.split(':').map(Number);
-      
-      const payload = {
-        year,
-        month,
-        day,
-        hour,
-        minute,
-        city,
-        lat,
-        lng,
-        tz_str: "auto"
-      };
 
-      const response = await fetch("https://api.freeastroapi.com/api/v1/vedic/panchang", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": "bb954671c72879c6bfdb8d8a9d10337295a933f9fff04b408794040ab9d4597e"
-        },
-        body: JSON.stringify(payload)
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const params = new URLSearchParams({
+        date,
+        lat: location.lat,
+        lon: location.lon,
+        timezone: location.timezone || "UTC"
       });
 
+      const response = await fetch(`${API_BASE}/astro/vedic-panchang?${params}`);
+      
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        throw new Error("Failed to fetch panchang data");
       }
 
-      const result = await response.json();
-      setData(result);
+      const data = await response.json();
+      setPanchang(data);
     } catch (err) {
-      setError(err.message || "Failed to fetch panchang data");
-      console.error("Error fetching panchang:", err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatDate = () => {
-    if (!date) return "";
-    const d = new Date(date);
-    return d.toLocaleDateString("en-IN", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
   };
 
   return (
@@ -152,294 +62,286 @@ export default function VedicPanchangPage() {
       <div className="mb-6 sm:mb-8">
         <div className="flex items-center gap-2 sm:gap-3 mb-2">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-            <MdAutoAwesome className="text-white" size={20} />
+            <span className="text-white text-xl">🕉️</span>
           </div>
           <div>
             <h1 className="mobile-header text-gray-800">Vedic Panchang</h1>
-            <p className="text-xs sm:text-sm text-gray-500">Detailed Vedic Calendar Information</p>
+            <p className="text-xs sm:text-sm text-gray-500">Complete Hindu Calendar Information</p>
           </div>
         </div>
       </div>
 
-      {/* Input Form */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
-        <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">Enter Details</h2>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-          {/* Date */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-            <DateInput
-              value={date}
-              onChange={setDate}
-              placeholder="Select date"
-            />
-          </div>
-
-          {/* Time */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
-            <input
-              type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary touch-target"
-            />
-          </div>
-
-          {/* Location */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-            <LocationInput
-              value={city}
-              onChange={setCity}
-              onLocationSelect={handleLocationSelect}
-            />
-          </div>
+      {/* Input Section */}
+      <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 mb-6">
+        <div className="space-y-4">
+          <DateInput value={date} onChange={(newDate) => { setDate(newDate); setError(""); }} />
+          <LocationInput 
+            value={locationText} 
+            onChange={setLocationText} 
+            onLocationSelect={handleLocationSelect}
+          />
+          
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+          
+          <Button 
+            onClick={handleCalculate} 
+            disabled={loading}
+            className="w-full"
+          >
+            {loading ? "Calculating..." : "Calculate Panchang"}
+          </Button>
         </div>
-
-        {/* Coordinates Display */}
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-gray-500 mb-4">
-          <span>Latitude: {lat.toFixed(4)}°</span>
-          <span>Longitude: {lng.toFixed(4)}°</span>
-        </div>
-
-        {/* Submit Button */}
-        <Button
-          onClick={handleFetchPanchang}
-          disabled={loading}
-          className="w-full sm:w-auto touch-target"
-        >
-          {loading ? "Fetching..." : "Get Panchang"}
-        </Button>
-
-        {error && (
-          <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
-            {error}
-          </div>
-        )}
       </div>
-
-      {/* Loading State */}
-      {loading && (
-        <div className="flex items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-sm text-gray-500 font-medium">Calculating Vedic Panchang…</p>
-          </div>
-        </div>
-      )}
 
       {/* Results */}
-      {data && !loading && (
-        <div className="space-y-6 sm:space-y-8">
-          {/* Date Display */}
-          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 border border-purple-100">
-            <p className="text-xs sm:text-sm text-gray-600 flex flex-wrap items-center gap-2">
-              <MdCalendarToday size={16} />
-              <span className="font-semibold">{formatDate()}</span>
-              <span className="mx-1 hidden sm:inline">•</span>
-              <MdAccessTime size={16} />
-              <span>{time}</span>
-              <span className="mx-1 hidden sm:inline">•</span>
-              <MdLocationCity size={16} />
-              <span className="truncate">{data.metadata?.location || city}</span>
-            </p>
+      {panchang && (
+        <div className="space-y-6">
+          {/* Basic Info Card */}
+          <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl shadow-md p-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Date & Location</h2>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-600">Date:</span>
+                <span className="ml-2 font-semibold">{panchang.date}</span>
+              </div>
+              <div>
+                <span className="text-gray-600">Vara (Day):</span>
+                <span className="ml-2 font-semibold">{panchang.vara?.sanskrit} ({panchang.vara?.english})</span>
+              </div>
+            </div>
           </div>
 
           {/* Sun & Moon Times */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Celestial Timings</h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <InfoCard
-                icon={MdWbSunny}
-                iconColor="text-orange-500"
-                bgGradient="bg-gradient-to-br from-orange-500 to-red-600"
-                label="Sunrise"
-                value={data.sunrise}
-              />
-              <InfoCard
-                icon={MdNightsStay}
-                iconColor="text-blue-500"
-                bgGradient="bg-gradient-to-br from-blue-600 to-cyan-600"
-                label="Sunset"
-                value={data.sunset}
-              />
-              <InfoCard
-                icon={MdDarkMode}
-                iconColor="text-purple-500"
-                bgGradient="bg-gradient-to-br from-purple-600 to-indigo-700"
-                label="Moonrise"
-                value={data.moonrise}
-              />
-              <InfoCard
-                icon={MdNightsStay}
-                iconColor="text-slate-500"
-                bgGradient="bg-gradient-to-br from-slate-600 to-gray-800"
-                label="Moonset"
-                value={data.moonset}
-              />
-            </div>
-          </div>
-
-          {/* Tithi, Nakshatra, Yoga, Karana */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Panchang Elements</h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {data.tithi && (
-                <InfoCard
-                  icon={MdCircle}
-                  iconColor="text-yellow-500"
-                  bgGradient="bg-gradient-to-br from-yellow-500 to-amber-600"
-                  label="Tithi"
-                  value={data.tithi.name}
-                  sub={data.tithi.lord ? `Lord: ${data.tithi.lord}` : undefined}
-                  extra={data.tithi.end_time && data.tithi.percent_remaining != null ? `Ends at ${data.tithi.end_time} (${data.tithi.percent_remaining.toFixed(1)}% remaining)` : undefined}
-                />
-              )}
-              
-              {data.nakshatra && (
-                <InfoCard
-                  icon={MdStar}
-                  iconColor="text-blue-500"
-                  bgGradient="bg-gradient-to-br from-blue-500 to-cyan-600"
-                  label="Nakshatra"
-                  value={data.nakshatra.name}
-                  sub={data.nakshatra.lord && data.nakshatra.pada ? `Lord: ${data.nakshatra.lord} • Pada ${data.nakshatra.pada}` : undefined}
-                  extra={data.nakshatra.end_time && data.nakshatra.percent_remaining != null ? `Ends at ${data.nakshatra.end_time} (${data.nakshatra.percent_remaining.toFixed(1)}% remaining)` : undefined}
-                />
-              )}
-              
-              {data.yoga && (
-                <InfoCard
-                  icon={MdSelfImprovement}
-                  iconColor="text-green-500"
-                  bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
-                  label="Yoga"
-                  value={data.yoga.name}
-                  sub={data.yoga.description}
-                  extra={data.yoga.percent_remaining != null ? `${data.yoga.percent_remaining.toFixed(1)}% remaining` : undefined}
-                />
-              )}
-              
-              {data.karana && (
-                <InfoCard
-                  icon={MdWbTwilight}
-                  iconColor="text-purple-500"
-                  bgGradient="bg-gradient-to-br from-purple-500 to-pink-600"
-                  label="Karana"
-                  value={data.karana.name}
-                  sub={data.karana.type ? `Type: ${data.karana.type}` : undefined}
-                  extra={data.karana.percent_remaining != null ? `${data.karana.percent_remaining.toFixed(1)}% remaining` : undefined}
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Weekday */}
-          {data.weekday && (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Day of the Week</h3>
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                  <MdCalendarToday size={28} className="text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl shadow-md p-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>☀️</span> Sun Times
+              </h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Sunrise:</span>
+                  <span className="font-semibold text-lg">{panchang.sun?.sunrise}</span>
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-800">{data.weekday.name}</p>
-                  <p className="text-sm text-gray-600">
-                    {data.weekday.sanskrit} • Lord: {data.weekday.lord}
-                  </p>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Sunset:</span>
+                  <span className="font-semibold text-lg">{panchang.sun?.sunset}</span>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t border-orange-200">
+                  <span className="text-gray-600">Day Duration:</span>
+                  <span className="font-semibold">{panchang.durations?.day_duration}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-md p-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🌙</span> Moon Times
+              </h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Moonrise:</span>
+                  <span className="font-semibold text-lg">{panchang.moon?.moonrise}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Moonset:</span>
+                  <span className="font-semibold text-lg">{panchang.moon?.moonset}</span>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t border-indigo-200">
+                  <span className="text-gray-600">Night Duration:</span>
+                  <span className="font-semibold">{panchang.durations?.night_duration}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Panchang Elements - Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Tithi */}
+            <div className="bg-white rounded-2xl shadow-md p-5 border-l-4 border-pink-500">
+              <h4 className="text-sm font-semibold text-gray-500 mb-2">TITHI</h4>
+              <div className="text-xl font-bold text-gray-800 mb-1">{panchang.tithi?.name}</div>
+              <div className="text-xs text-gray-600">Index: {panchang.tithi?.index}</div>
+              <div className="mt-3 bg-gray-100 rounded-full h-2">
+                <div 
+                  className="bg-pink-500 h-2 rounded-full transition-all"
+                  style={{ width: `${panchang.tithi?.percent_elapsed || 0}%` }}
+                ></div>
+              </div>
+              <div className="text-xs text-gray-500 mt-1">{panchang.tithi?.percent_elapsed}% elapsed</div>
+            </div>
+
+            {/* Nakshatra */}
+            <div className="bg-white rounded-2xl shadow-md p-5 border-l-4 border-purple-500">
+              <h4 className="text-sm font-semibold text-gray-500 mb-2">NAKSHATRA</h4>
+              <div className="text-xl font-bold text-gray-800 mb-1">{panchang.nakshatra?.name}</div>
+              <div className="text-xs text-gray-600">Pada: {panchang.nakshatra?.pada}</div>
+              <div className="mt-3 bg-gray-100 rounded-full h-2">
+                <div 
+                  className="bg-purple-500 h-2 rounded-full transition-all"
+                  style={{ width: `${panchang.nakshatra?.percent_elapsed || 0}%` }}
+                ></div>
+              </div>
+              <div className="text-xs text-gray-500 mt-1">{panchang.nakshatra?.percent_elapsed}% elapsed</div>
+            </div>
+
+            {/* Yoga */}
+            <div className="bg-white rounded-2xl shadow-md p-5 border-l-4 border-blue-500">
+              <h4 className="text-sm font-semibold text-gray-500 mb-2">YOGA</h4>
+              <div className="text-xl font-bold text-gray-800 mb-1">{panchang.yoga?.name}</div>
+              <div className="text-xs text-gray-600">Index: {panchang.yoga?.index}</div>
+              <div className="mt-3 bg-gray-100 rounded-full h-2">
+                <div 
+                  className="bg-blue-500 h-2 rounded-full transition-all"
+                  style={{ width: `${panchang.yoga?.percent_elapsed || 0}%` }}
+                ></div>
+              </div>
+              <div className="text-xs text-gray-500 mt-1">{panchang.yoga?.percent_elapsed}% elapsed</div>
+            </div>
+
+            {/* Karana */}
+            <div className="bg-white rounded-2xl shadow-md p-5 border-l-4 border-green-500">
+              <h4 className="text-sm font-semibold text-gray-500 mb-2">KARANA</h4>
+              <div className="text-xl font-bold text-gray-800 mb-1">{panchang.karana?.name}</div>
+              <div className="text-xs text-gray-600">Index: {panchang.karana?.index}</div>
+            </div>
+          </div>
+
+          {/* Current Elements with End Times */}
+          {panchang.current && (
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl shadow-md p-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">⏰ Current Elements (Live)</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white rounded-lg p-4">
+                  <div className="text-sm text-gray-600 mb-1">Current Tithi</div>
+                  <div className="font-bold text-gray-800">{panchang.current.tithi?.name}</div>
+                  {panchang.current.tithi?.end_time && (
+                    <div className="text-xs text-green-600 mt-1">
+                      Ends at: {panchang.current.tithi.end_time}
+                    </div>
+                  )}
+                </div>
+                <div className="bg-white rounded-lg p-4">
+                  <div className="text-sm text-gray-600 mb-1">Current Yoga</div>
+                  <div className="font-bold text-gray-800">{panchang.current.yoga?.name}</div>
+                  {panchang.current.yoga?.end_time && (
+                    <div className="text-xs text-green-600 mt-1">
+                      Ends at: {panchang.current.yoga.end_time}
+                    </div>
+                  )}
+                </div>
+                <div className="bg-white rounded-lg p-4">
+                  <div className="text-sm text-gray-600 mb-1">Current Karana</div>
+                  <div className="font-bold text-gray-800">{panchang.current.karana?.name}</div>
+                  {panchang.current.karana?.end_time && (
+                    <div className="text-xs text-green-600 mt-1">
+                      Ends at: {panchang.current.karana.end_time}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {panchang.current.choghadiya && (
+                <div className="mt-4 bg-white rounded-lg p-4">
+                  <div className="text-sm text-gray-600 mb-1">Current Choghadiya</div>
+                  <div className="flex items-center gap-3">
+                    <div className="font-bold text-gray-800">{panchang.current.choghadiya.name}</div>
+                    <div className={`text-xs px-2 py-1 rounded-full ${
+                      panchang.current.choghadiya.quality === 'Excellent' ? 'bg-green-100 text-green-700' :
+                      panchang.current.choghadiya.quality === 'Good' ? 'bg-blue-100 text-blue-700' :
+                      panchang.current.choghadiya.quality === 'Beneficial' ? 'bg-purple-100 text-purple-700' :
+                      panchang.current.choghadiya.quality === 'Neutral' ? 'bg-gray-100 text-gray-700' :
+                      'bg-red-100 text-red-700'
+                    }`}>
+                      {panchang.current.choghadiya.quality}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {panchang.current.choghadiya.start} - {panchang.current.choghadiya.end}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Choghadiya Periods */}
+          {panchang.choghadiya && (
+            <div className="bg-white rounded-2xl shadow-md p-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">Choghadiya Periods</h3>
+              
+              {/* Day Choghadiya */}
+              <div className="mb-6">
+                <h4 className="text-md font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                  <span>☀️</span> Day Choghadiya
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {panchang.choghadiya.day?.map((period, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`p-3 rounded-lg border-2 ${
+                        period.quality === 'Excellent' ? 'border-green-300 bg-green-50' :
+                        period.quality === 'Good' ? 'border-blue-300 bg-blue-50' :
+                        period.quality === 'Beneficial' ? 'border-purple-300 bg-purple-50' :
+                        period.quality === 'Neutral' ? 'border-gray-300 bg-gray-50' :
+                        'border-red-300 bg-red-50'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-800">{period.name}</div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {period.start} - {period.end}
+                      </div>
+                      <div className={`text-xs mt-1 font-medium ${
+                        period.quality === 'Excellent' ? 'text-green-600' :
+                        period.quality === 'Good' ? 'text-blue-600' :
+                        period.quality === 'Beneficial' ? 'text-purple-600' :
+                        period.quality === 'Neutral' ? 'text-gray-600' :
+                        'text-red-600'
+                      }`}>
+                        {period.quality}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Night Choghadiya */}
+              <div>
+                <h4 className="text-md font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                  <span>🌙</span> Night Choghadiya
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {panchang.choghadiya.night?.map((period, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`p-3 rounded-lg border-2 ${
+                        period.quality === 'Excellent' ? 'border-green-300 bg-green-50' :
+                        period.quality === 'Good' ? 'border-blue-300 bg-blue-50' :
+                        period.quality === 'Beneficial' ? 'border-purple-300 bg-purple-50' :
+                        period.quality === 'Neutral' ? 'border-gray-300 bg-gray-50' :
+                        'border-red-300 bg-red-50'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-800">{period.name}</div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {period.start} - {period.end}
+                      </div>
+                      <div className={`text-xs mt-1 font-medium ${
+                        period.quality === 'Excellent' ? 'text-green-600' :
+                        period.quality === 'Good' ? 'text-blue-600' :
+                        period.quality === 'Beneficial' ? 'text-purple-600' :
+                        period.quality === 'Neutral' ? 'text-gray-600' :
+                        'text-red-600'
+                      }`}>
+                        {period.quality}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           )}
-
-          {/* Inauspicious Timings */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Inauspicious Periods</h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {data.rahu_kalam && (
-                <TimeRangeCard
-                  icon={MdDarkMode}
-                  label="Rahu Kalam"
-                  start={data.rahu_kalam.start}
-                  end={data.rahu_kalam.end}
-                  bgGradient="bg-gradient-to-br from-red-600 to-rose-700"
-                />
-              )}
-              
-              {data.gulika_kalam && (
-                <TimeRangeCard
-                  icon={MdNightsStay}
-                  label="Gulika Kalam"
-                  start={data.gulika_kalam.start}
-                  end={data.gulika_kalam.end}
-                  bgGradient="bg-gradient-to-br from-orange-600 to-red-700"
-                />
-              )}
-              
-              {data.yamagandam && (
-                <TimeRangeCard
-                  icon={MdWbCloudy}
-                  label="Yamagandam"
-                  start={data.yamagandam.start}
-                  end={data.yamagandam.end}
-                  bgGradient="bg-gradient-to-br from-slate-600 to-gray-700"
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Auspicious Timing */}
-          {data.abhijit_muhurta && (
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Auspicious Muhurta</h3>
-              <TimeRangeCard
-                icon={MdWbSunny}
-                label="Abhijit Muhurta"
-                start={data.abhijit_muhurta.start}
-                end={data.abhijit_muhurta.end}
-                available={data.abhijit_muhurta.available}
-                bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
-              />
-            </div>
-          )}
-
-          {/* Zodiac Signs */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Zodiac Positions</h3>
-            <div className="grid sm:grid-cols-2 gap-5">
-              {data.sun_sign && (
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
-                      <MdWbSunny size={24} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase">Sun Sign</p>
-                      <p className="text-xl font-bold text-gray-800">{data.sun_sign.name}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600">Degree: {data.sun_sign.degree != null ? data.sun_sign.degree.toFixed(2) : 'N/A'}°</p>
-                </div>
-              )}
-              
-              {data.moon_sign && (
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-xl flex items-center justify-center">
-                      <MdNightsStay size={24} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase">Moon Sign</p>
-                      <p className="text-xl font-bold text-gray-800">{data.moon_sign.name}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600">Degree: {data.moon_sign.degree != null ? data.moon_sign.degree.toFixed(2) : 'N/A'}°</p>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
       )}
     </div>

@@ -16,6 +16,9 @@ python-jose[cryptography]==3.3.0
 
 ephem==4.2.1
 pytz==2024.1
+pyswisseph==2.10.3.2
+timezonefinder==6.5.2
+geopy==2.4.1
 
 # Twilio for WhatsApp integration
 twilio>=9.0.0
