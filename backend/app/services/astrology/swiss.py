@@ -101,6 +101,52 @@ CHOGHADIYA_QUALITY = {
     "Kaal": "Inauspicious",
 }
 
+# Hindu solar months (based on Sun's sidereal rashi)
+HINDU_MONTHS = [
+    "Chaitra", "Vaishakha", "Jyeshtha", "Ashadha",
+    "Shravana", "Bhadrapada", "Ashwin", "Kartika",
+    "Margashirsha", "Pausha", "Magha", "Phalguna"
+]
+
+# Hora: Chaldean planet order (slowest to fastest)
+CHALDEAN_ORDER = ["Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon"]
+
+# Index of first hora planet for each weekday
+HORA_DAY_START = {
+    "Sunday": 3, "Monday": 6, "Tuesday": 2,
+    "Wednesday": 5, "Thursday": 1, "Friday": 4, "Saturday": 0,
+}
+
+HORA_QUALITY = {
+    "Sun": "Good", "Moon": "Beneficial", "Mars": "Inauspicious",
+    "Mercury": "Neutral", "Jupiter": "Excellent",
+    "Venus": "Good", "Saturn": "Inauspicious",
+}
+
+# Festivals lookup: (solar_month_0idx, tithi_1to30) -> name
+# tithi 1-15 = Shukla 1-15, 16-30 = Krishna 1-15 (30 = Amavasya)
+FESTIVALS_DB = {
+    (0, 1):  "Ugadi / Gudi Padwa",
+    (0, 9):  "Ram Navami",
+    (0, 13): "Hanuman Jayanti",
+    (1, 3):  "Akshaya Tritiya",
+    (3, 15): "Guru Purnima",
+    (4, 5):  "Nag Panchami",
+    (4, 15): "Raksha Bandhan",
+    (5, 4):  "Ganesh Chaturthi",
+    (5, 23): "Janmashtami",
+    (6, 1):  "Navratri Begins",
+    (6, 10): "Dussehra / Vijaya Dashami",
+    (6, 15): "Sharad Purnima",
+    (7, 28): "Dhanteras",
+    (7, 29): "Naraka Chaturdashi",
+    (7, 30): "Diwali / Lakshmi Puja",
+    (7, 17): "Bhai Dooj",
+    (10, 5): "Vasant Panchami",
+    (11, 14):"Holika Dahan",
+    (11, 15):"Holi",
+}
+
 
 def get_julian_day(dt: datetime) -> float:
     """Convert datetime to Julian Day."""
@@ -138,19 +184,19 @@ def get_sunrise_sunset(dt: datetime, lat: float, lon: float, tz_str: str) -> Dic
     jd = get_julian_day(date_midnight)
     
     # Calculate sunrise and sunset
-    #rise_set returns (rise_time_jd, set_time_jd, error_code)
-    result_rise = swe.rise_trans(jd, swe.SUN, lon, lat, alt=0, rsmi=swe.CALC_RISE)
-    result_set = swe.rise_trans(jd, swe.SUN, lon, lat, alt=0, rsmi=swe.CALC_SET)
-    
-    if result_rise[1] == 0:  # No error
-        sunrise_jd = result_rise[0]
-        sunrise_dt = jd_to_datetime(sunrise_jd, tz)
+    # rise_trans(tjdut, body, rsmi, geopos[lon,lat,alt], atpress, attemp, flags)
+    # returns (res, tret_tuple): res==0 found, tret[0] is JD of event
+    geopos = (lon, lat, 0.0)
+    result_rise = swe.rise_trans(jd, swe.SUN, swe.CALC_RISE, geopos)
+    result_set  = swe.rise_trans(jd, swe.SUN, swe.CALC_SET,  geopos)
+
+    if result_rise[0] == 0:  # 0 = event found
+        sunrise_dt = jd_to_datetime(result_rise[1][0], tz)
     else:
         sunrise_dt = date_midnight.replace(hour=6, minute=0)
-    
-    if result_set[1] == 0:
-        sunset_jd = result_set[0]
-        sunset_dt = jd_to_datetime(sunset_jd, tz)
+
+    if result_set[0] == 0:
+        sunset_dt = jd_to_datetime(result_set[1][0], tz)
     else:
         sunset_dt = date_midnight.replace(hour=18, minute=0)
     
@@ -172,19 +218,20 @@ def get_moonrise_moonset(dt: datetime, lat: float, lon: float, tz_str: str) -> D
     date_midnight = dt.replace(hour=0, minute=0, second=0, microsecond=0)
     jd = get_julian_day(date_midnight)
     
-    result_rise = swe.rise_trans(jd, swe.MOON, lon, lat, alt=0, rsmi=swe.CALC_RISE)
-    result_set = swe.rise_trans(jd, swe.MOON, lon, lat, alt=0, rsmi=swe.CALC_SET)
-    
+    # rise_trans(tjdut, body, rsmi, geopos[lon,lat,alt], atpress, attemp, flags)
+    # returns (res, tret_tuple): res==0 found, tret[0] is JD of event
+    geopos = (lon, lat, 0.0)
+    result_rise = swe.rise_trans(jd, swe.MOON, swe.CALC_RISE, geopos)
+    result_set  = swe.rise_trans(jd, swe.MOON, swe.CALC_SET,  geopos)
+
     moonrise_dt = None
     moonset_dt = None
-    
-    if result_rise[1] == 0:
-        moonrise_jd = result_rise[0]
-        moonrise_dt = jd_to_datetime(moonrise_jd, tz)
-    
-    if result_set[1] == 0:
-        moonset_jd = result_set[0]
-        moonset_dt = jd_to_datetime(moonset_jd, tz)
+
+    if result_rise[0] == 0:
+        moonrise_dt = jd_to_datetime(result_rise[1][0], tz)
+
+    if result_set[0] == 0:
+        moonset_dt = jd_to_datetime(result_set[1][0], tz)
     
     return {
         "moonrise": moonrise_dt,
@@ -426,6 +473,110 @@ def find_karana_end_time(jd_start: float, sun_lon: float, moon_lon: float, curre
     return None
 
 
+def calculate_muhurta(sunrise: datetime, sunset: datetime, next_sunrise: datetime) -> List[Dict]:
+    """Calculate auspicious Muhurtas based on sunrise/sunset."""
+    day_secs = (sunset - sunrise).total_seconds()
+    night_secs = (next_sunrise - sunset).total_seconds()
+    muhurta_unit = day_secs / 15  # one muhurta = day/15
+
+    midday   = sunrise + timedelta(seconds=day_secs / 2)
+    midnight = sunset  + timedelta(seconds=night_secs / 2)
+
+    return [
+        {
+            "name": "Brahma Muhurta",
+            "start": (sunrise - timedelta(minutes=96)).strftime("%H:%M"),
+            "end":   (sunrise - timedelta(minutes=48)).strftime("%H:%M"),
+            "quality": "Excellent",
+            "description": "Ideal for meditation, study and spiritual practice",
+        },
+        {
+            "name": "Abhijit Muhurta",
+            "start": (midday - timedelta(minutes=24)).strftime("%H:%M"),
+            "end":   (midday + timedelta(minutes=24)).strftime("%H:%M"),
+            "quality": "Excellent",
+            "description": "Most powerful period, ideal for all auspicious activities",
+        },
+        {
+            "name": "Vijaya Muhurta",
+            "start": (sunset - timedelta(seconds=2 * muhurta_unit)).strftime("%H:%M"),
+            "end":   (sunset - timedelta(seconds=muhurta_unit)).strftime("%H:%M"),
+            "quality": "Good",
+            "description": "Auspicious for victory and new beginnings",
+        },
+        {
+            "name": "Godhuli Muhurta",
+            "start": (sunset - timedelta(minutes=24)).strftime("%H:%M"),
+            "end":   (sunset + timedelta(minutes=24)).strftime("%H:%M"),
+            "quality": "Good",
+            "description": "Sacred twilight period, good for prayers and auspicious activities",
+        },
+        {
+            "name": "Nishita Muhurta",
+            "start": (midnight - timedelta(minutes=24)).strftime("%H:%M"),
+            "end":   (midnight + timedelta(minutes=24)).strftime("%H:%M"),
+            "quality": "Good",
+            "description": "Sacred midnight period for deep spiritual practice",
+        },
+    ]
+
+
+def calculate_hora(sunrise: datetime, sunset: datetime, next_sunrise: datetime, weekday: str) -> List[Dict]:
+    """Calculate 24 Hora (planetary hours) for day and night."""
+    start_idx = HORA_DAY_START[weekday]
+    day_secs   = (sunset - sunrise).total_seconds()
+    night_secs = (next_sunrise - sunset).total_seconds()
+    day_hora_dur   = day_secs / 12
+    night_hora_dur = night_secs / 12
+
+    horas = []
+    for i in range(12):
+        planet = CHALDEAN_ORDER[(start_idx + i) % 7]
+        horas.append({
+            "period": "Day",
+            "hora_number": i + 1,
+            "planet": planet,
+            "start": (sunrise + timedelta(seconds=i * day_hora_dur)).strftime("%H:%M"),
+            "end":   (sunrise + timedelta(seconds=(i + 1) * day_hora_dur)).strftime("%H:%M"),
+            "quality": HORA_QUALITY.get(planet, "Neutral"),
+        })
+    for i in range(12):
+        planet = CHALDEAN_ORDER[(start_idx + 12 + i) % 7]
+        horas.append({
+            "period": "Night",
+            "hora_number": i + 1,
+            "planet": planet,
+            "start": (sunset + timedelta(seconds=i * night_hora_dur)).strftime("%H:%M"),
+            "end":   (sunset + timedelta(seconds=(i + 1) * night_hora_dur)).strftime("%H:%M"),
+            "quality": HORA_QUALITY.get(planet, "Neutral"),
+        })
+    return horas
+
+
+def calculate_hindu_calendar(sun_lon: float, tithi_index: int) -> Dict:
+    """Calculate Hindu month, paksha, and paksha day."""
+    solar_month_idx = int(sun_lon / 30) % 12
+    month = HINDU_MONTHS[solar_month_idx]
+
+    if tithi_index <= 15:
+        paksha = "Shukla Paksha"
+        paksha_day = tithi_index
+    else:
+        paksha = "Krishna Paksha"
+        paksha_day = tithi_index - 15
+
+    return {"month": month, "paksha": paksha, "paksha_day": paksha_day}
+
+
+def get_festivals(solar_month_idx: int, tithi_index: int) -> List[str]:
+    """Return festivals for given solar month and tithi."""
+    festivals = []
+    key = (solar_month_idx, tithi_index)
+    if key in FESTIVALS_DB:
+        festivals.append(FESTIVALS_DB[key])
+    return festivals
+
+
 def get_vedic_panchang(date_str: str, lat: float, lon: float, tz_str: str = "UTC") -> Dict:
     """
     Calculate complete Vedic Panchang for a given date and location.
@@ -486,16 +637,23 @@ def get_vedic_panchang(date_str: str, lat: float, lon: float, tz_str: str = "UTC
         next_sun_data["sunrise"],
         vara["english"]
     )
-    
+
+    # Calculate Muhurta, Hora, Hindu calendar, Festivals
+    muhurta = calculate_muhurta(sun_data["sunrise"], sun_data["sunset"], next_sun_data["sunrise"])
+    hora = calculate_hora(sun_data["sunrise"], sun_data["sunset"], next_sun_data["sunrise"], vara["english"])
+    hindu_cal = calculate_hindu_calendar(sun_lon, tithi["index"])
+    solar_month_idx = int(sun_lon / 30) % 12
+    festivals = get_festivals(solar_month_idx, tithi["index"])
+
     # Calculate current element end times
     current_jd = get_julian_day(datetime.now(tz))
     current_sun = get_sidereal_position(swe.SUN, current_jd)
     current_moon = get_sidereal_position(swe.MOON, current_jd)
-    
+
     tithi_end = find_tithi_end_time(current_jd, current_sun, current_moon, datetime.now(tz), tz)
     yoga_end = find_yoga_end_time(current_jd, current_sun, current_moon, datetime.now(tz), tz)
     karana_end = find_karana_end_time(current_jd, current_sun, current_moon, datetime.now(tz), tz)
-    
+
     # Get current Choghadiya
     now = datetime.now(tz)
     current_choghadiya = None
@@ -521,7 +679,7 @@ def get_vedic_panchang(date_str: str, lat: float, lon: float, tz_str: str = "UTC
             if period_start <= now <= period_end:
                 current_choghadiya = period
                 break
-    
+
     return {
         "date": date_str,
         "location": {"latitude": lat, "longitude": lon, "timezone": tz_str},
@@ -539,6 +697,10 @@ def get_vedic_panchang(date_str: str, lat: float, lon: float, tz_str: str = "UTC
         "karana": karana,
         "vara": vara,
         "durations": durations,
+        "hindu_calendar": hindu_cal,
+        "festivals": festivals,
+        "muhurta": muhurta,
+        "hora": hora,
         "choghadiya": choghadiya,
         "current": {
             "tithi": {**tithi, "end_time": tithi_end},

@@ -7,6 +7,7 @@ from app.db import get_profile, get_profile_by_id, get_daily_cache
 from app.services.astrology.daily_generator import generate_sunsign_daily, generate_personalized_daily
 from app.services.astrology.panchang import compute_full_panchang
 from app.services.astrology.swiss import get_vedic_panchang
+from app.services.astrology.horoscope_generator import generate_horoscope
 
 router = APIRouter()
 
@@ -47,6 +48,28 @@ async def today_personalized(
     if not prof:
         raise HTTPException(status_code=404, detail="Profile not found. Save a profile first.")
     return {"date": d, "content": generate_personalized_daily(d, prof)}
+
+@router.get("/horoscope/{period}")
+def horoscope(
+    period: str,
+    sign: str,
+    date: Optional[str] = None,
+):
+    """
+    Generate horoscope for a sun sign.
+    period: daily | weekly | monthly
+    sign:   aries | taurus | gemini | cancer | leo | virgo |
+            libra | scorpio | sagittarius | capricorn | aquarius | pisces
+    """
+    if period not in ("daily", "weekly", "monthly"):
+        raise HTTPException(status_code=400, detail="period must be daily, weekly, or monthly")
+    d = date or dt_date.today().isoformat()
+    try:
+        content = generate_horoscope(sign, period, d)
+        return {"sign": sign.lower(), "date": d, "period": period, "content": content}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Horoscope error: {str(e)}")
+
 
 @router.get("/vedic-panchang")
 def vedic_panchang(

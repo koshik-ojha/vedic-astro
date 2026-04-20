@@ -1,4 +1,4 @@
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "https://vedic-astro-backend-rox2.onrender.com";
+const BACKEND = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 function getToken() {
   if (typeof window === "undefined") return null;

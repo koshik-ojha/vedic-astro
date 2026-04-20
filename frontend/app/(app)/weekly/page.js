@@ -23,17 +23,15 @@ const ZODIAC = [
   { value: "pisces",      label: "Pisces (मीन)" },
 ];
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 async function fetchSunSignHoroscope(sign) {
-  const res = await fetch(`/api/horoscope/weekly?sign=${encodeURIComponent(sign)}`);
-  if (!res.ok) throw new Error(`Horoscope error: ${res.status} ${res.statusText}`);
-  const json = await res.json();
-  const d = json.data;
-  return {
-    sign:    d.sign,
-    date:    d.date,
-    period:  d.period,
-    content: d.horoscope, // ← map "horoscope" → "content" so AstroOutput renders it
-  };
+  const res = await fetch(`${API_BASE}/astro/horoscope/weekly?sign=${encodeURIComponent(sign)}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `Horoscope error: ${res.status}`);
+  }
+  return res.json(); // {sign, date, period, content}
 }
 
 function DailyContent() {

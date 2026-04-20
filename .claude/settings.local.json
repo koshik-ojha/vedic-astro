@@ -3,7 +3,11 @@
     "allow": [
       "Bash(python -c \"from app.api.astro import router; print\\('Router loaded OK'\\); print\\([r.path for r in router.routes]\\)\")",
       "Bash(Scripts/python.exe -c \"from app.api.astro import router; print\\('Router loaded OK'\\); print\\([r.path for r in router.routes]\\)\")",
-      "Bash(cmd:*)"
+      "Bash(cmd:*)",
+      "Bash(python -c \"import swisseph as swe; help\\(swe.rise_trans\\)\")",
+      "Bash(python:*)",
+      "Bash(grep -E \"\\\\.py$\")",
+      "Bash(find:*)"
     ]
   }
 }
