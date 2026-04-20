@@ -1,0 +1,30 @@
+export const colors = {
+  bg: '#0d0d2b',
+  bgCard: '#1a1a3e',
+  bgCardLight: '#252550',
+  primary: '#7c3aed',
+  primaryLight: '#a855f7',
+  accent: '#f59e0b',
+  gold: '#fbbf24',
+  text: '#ffffff',
+  textMuted: '#9ca3af',
+  textSecondary: '#c4b5fd',
+  border: '#2d2d5e',
+  error: '#ef4444',
+  success: '#10b981',
+};
+
+export const zodiacSigns = [
+  { name: 'Aries', symbol: '♈', emoji: '🐏', dates: 'Mar 21 – Apr 19' },
+  { name: 'Taurus', symbol: '♉', emoji: '🐂', dates: 'Apr 20 – May 20' },
+  { name: 'Gemini', symbol: '♊', emoji: '👯', dates: 'May 21 – Jun 20' },
+  { name: 'Cancer', symbol: '♋', emoji: '🦀', dates: 'Jun 21 – Jul 22' },
+  { name: 'Leo', symbol: '♌', emoji: '🦁', dates: 'Jul 23 – Aug 22' },
+  { name: 'Virgo', symbol: '♍', emoji: '👧', dates: 'Aug 23 – Sep 22' },
+  { name: 'Libra', symbol: '♎', emoji: '⚖️', dates: 'Sep 23 – Oct 22' },
+  { name: 'Scorpio', symbol: '♏', emoji: '🦂', dates: 'Oct 23 – Nov 21' },
+  { name: 'Sagittarius', symbol: '♐', emoji: '🏹', dates: 'Nov 22 – Dec 21' },
+  { name: 'Capricorn', symbol: '♑', emoji: '🐐', dates: 'Dec 22 – Jan 19' },
+  { name: 'Aquarius', symbol: '♒', emoji: '🏺', dates: 'Jan 20 – Feb 18' },
+  { name: 'Pisces', symbol: '♓', emoji: '🐟', dates: 'Feb 19 – Mar 20' },
+];

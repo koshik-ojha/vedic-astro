@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Vedic Astro",
+    "slug": "vedic-astro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0d0d2b"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vedicastro.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0d0d2b"
+      },
+      "package": "com.vedicastro.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
+  }
+}
