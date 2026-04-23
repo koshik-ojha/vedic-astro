@@ -77,14 +77,17 @@ def vedic_panchang(
     lon: float = 77.2090,
     timezone: str = "Asia/Kolkata",
     date: Optional[str] = None,
+    birth_nakshatra: Optional[int] = None,
+    birth_rashi: Optional[int] = None,
 ):
     """
-    Get detailed Vedic Panchang using Swiss Ephemeris.
-    Includes: Tithi, Nakshatra, Yoga, Karana, Vara, Choghadiya, and current timings.
+    Get detailed Vedic Panchang using Swiss Ephemeris (52 fields).
+    birth_nakshatra: 0-26 index (Ashwini=0) for tarabalam calculation.
+    birth_rashi: 0-11 index (Aries=0) for chandrabalam calculation.
     """
     d = date or dt_date.today().isoformat()
     try:
-        result = get_vedic_panchang(d, lat, lon, timezone)
+        result = get_vedic_panchang(d, lat, lon, timezone, birth_nakshatra, birth_rashi)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error calculating panchang: {str(e)}")

@@ -11,6 +11,7 @@ import HomeScreen from '../screens/HomeScreen';
 import HoroscopeScreen from '../screens/HoroscopeScreen';
 import PanchangScreen from '../screens/PanchangScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import QuickHoroscopeScreen from '../screens/QuickHoroscopeScreen';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { colors } from '../utils/theme';
 
@@ -33,6 +34,7 @@ function MainTabs() {
         tabBarIcon: ({ color, size }) => {
           const icons = {
             Home: 'home-outline',
+            Reading: 'sparkles-outline',
             Panchang: 'calendar-outline',
             Profile: 'person-outline',
           };
@@ -41,6 +43,7 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Reading" component={QuickHoroscopeScreen} />
       <Tab.Screen name="Panchang" component={PanchangScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

@@ -6,7 +6,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../context/AuthContext';
 import { getProfiles } from '../api/profile';
-import { getPersonalized, getTodaySunSign } from '../api/astro';
+import { getPersonalized } from '../api/astro';
 import { colors, zodiacSigns } from '../utils/theme';
 import LoadingSpinner from '../components/LoadingSpinner';
 
@@ -17,19 +17,28 @@ export default function HomeScreen({ navigation }) {
   const [horoscope, setHoroscope] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchData = async () => {
+    setError(null);
     try {
       const { data } = await getProfiles();
       setProfiles(data.profiles || []);
       if (data.profiles?.length > 0) {
         const first = data.profiles[0];
         setActiveProfile(first);
-        const res = await getPersonalized(first._id);
-        setHoroscope(res.data);
+        try {
+          const res = await getPersonalized(first.id);
+          setHoroscope(res.data);
+        } catch {
+          // personalized horoscope is optional, don't block the whole screen
+        }
       }
     } catch (e) {
-      console.log('Error fetching home data', e.message);
+      const msg = e.code === 'ECONNABORTED'
+        ? 'Server is starting up. Pull down to refresh.'
+        : 'Unable to load data. Pull down to refresh.';
+      setError(msg);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -59,8 +68,15 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
+        {/* Error banner */}
+        {error && (
+          <View style={styles.errorBanner}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
+
         {/* No profile CTA */}
-        {profiles.length === 0 && (
+        {!error && profiles.length === 0 && (
           <TouchableOpacity style={styles.ctaCard} onPress={() => navigation.navigate('Profile')}>
             <Text style={styles.ctaIcon}>✨</Text>
             <Text style={styles.ctaTitle}>Set Up Your Profile</Text>
@@ -73,7 +89,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Today's Personalized Reading</Text>
             <Text style={styles.profileName}>For: {activeProfile?.profile_name}</Text>
-            <Text style={styles.horoscopeText}>{horoscope.horoscope || horoscope.content || JSON.stringify(horoscope)}</Text>
+            <Text style={styles.horoscopeText}>{horoscope.horoscope || horoscope.content || horoscope.prediction || horoscope.message || ''}</Text>
           </View>
         )}
 
@@ -126,6 +142,8 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 16, fontWeight: 'bold', color: colors.gold, marginBottom: 4 },
   profileName: { fontSize: 12, color: colors.textMuted, marginBottom: 12 },
   horoscopeText: { color: colors.text, fontSize: 14, lineHeight: 22 },
+  errorBanner: { backgroundColor: '#2d1a1a', borderRadius: 12, padding: 14, marginBottom: 16, borderWidth: 1, borderColor: colors.error },
+  errorText: { color: colors.error, fontSize: 13, textAlign: 'center' },
   sectionTitle: { fontSize: 16, fontWeight: 'bold', color: colors.textSecondary, marginBottom: 12, marginTop: 8 },
   zodiacGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 },
   zodiacCard: { width: '22%', backgroundColor: colors.bgCard, borderRadius: 12, padding: 10, alignItems: 'center', borderWidth: 1, borderColor: colors.border },

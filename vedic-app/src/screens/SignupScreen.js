@@ -21,7 +21,10 @@ export default function SignupScreen({ navigation }) {
     try {
       await signup(name.trim(), email.trim(), password);
     } catch (e) {
-      Alert.alert('Signup Failed', e.response?.data?.detail || 'Something went wrong');
+      const msg = e.code === 'ECONNABORTED'
+        ? 'Server is waking up, please try again in a moment.'
+        : e.response?.data?.detail || e.response?.data?.message || 'Something went wrong. Please try again.';
+      Alert.alert('Signup Failed', msg);
     } finally {
       setLoading(false);
     }

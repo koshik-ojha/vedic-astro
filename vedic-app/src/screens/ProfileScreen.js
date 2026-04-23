@@ -30,7 +30,7 @@ export default function ProfileScreen() {
       const { data } = await getProfiles();
       setProfiles(data.profiles || []);
     } catch (e) {
-      console.log('Profile load error', e.message);
+      Alert.alert('Error', e.code === 'ECONNABORTED' ? 'Server is starting up, please try again.' : 'Failed to load profiles. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -39,13 +39,21 @@ export default function ProfileScreen() {
   useEffect(() => { load(); }, []);
 
   const handleSave = async () => {
-    if (!form.dob || !form.place_name) return Alert.alert('Error', 'Date of birth and place are required');
+    if (!form.profile_name) return Alert.alert('Error', 'Profile name is required');
+    if (!form.dob) return Alert.alert('Error', 'Date of birth is required');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(form.dob)) return Alert.alert('Error', 'Date must be in YYYY-MM-DD format (e.g. 1990-01-15)');
+    if (!form.place_name) return Alert.alert('Error', 'Place of birth is required');
+    if (!form.lat || !form.lon) return Alert.alert('Error', 'Latitude and Longitude are required for accurate calculations');
+    const lat = parseFloat(form.lat);
+    const lon = parseFloat(form.lon);
+    if (isNaN(lat) || lat < -90 || lat > 90) return Alert.alert('Error', 'Latitude must be between -90 and 90');
+    if (isNaN(lon) || lon < -180 || lon > 180) return Alert.alert('Error', 'Longitude must be between -180 and 180');
     setSaving(true);
     try {
       await createProfile({
         ...form,
-        lat: parseFloat(form.lat) || 0,
-        lon: parseFloat(form.lon) || 0,
+        lat,
+        lon,
       });
       setModal(false);
       setForm(EMPTY_FORM);
@@ -89,13 +97,13 @@ export default function ProfileScreen() {
         )}
 
         {profiles.map((p) => (
-          <View key={p._id} style={styles.card}>
+          <View key={p.id} style={styles.card}>
             <View style={{ flex: 1 }}>
               <Text style={styles.profileName}>{p.profile_name}</Text>
               <Text style={styles.profileDetail}>DOB: {p.dob} {p.tob ? `at ${p.tob}` : ''}</Text>
               <Text style={styles.profileDetail}>Place: {p.place_name}</Text>
             </View>
-            <TouchableOpacity onPress={() => handleDelete(p._id, p.profile_name)} style={styles.deleteBtn}>
+            <TouchableOpacity onPress={() => handleDelete(p.id, p.profile_name)} style={styles.deleteBtn}>
               <Text style={styles.deleteBtnText}>Delete</Text>
             </TouchableOpacity>
           </View>

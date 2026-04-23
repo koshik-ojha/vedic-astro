@@ -14,15 +14,17 @@ export default function HoroscopeScreen({ route }) {
   const [period, setPeriod] = useState('daily');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchHoroscope = async (p) => {
     setLoading(true);
     setData(null);
+    setError(null);
     try {
       const { data: res } = await getSunSignHoroscope(sign.name.toLowerCase(), p);
       setData(res);
     } catch (e) {
-      console.log('Horoscope error', e.message);
+      setError(e.code === 'ECONNABORTED' ? 'Server is starting up, please try again.' : 'Unable to fetch horoscope. Try again.');
     } finally {
       setLoading(false);
     }
@@ -61,10 +63,15 @@ export default function HoroscopeScreen({ route }) {
         ) : data ? (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>{period.charAt(0).toUpperCase() + period.slice(1)} Horoscope</Text>
-            <Text style={styles.content}>{data.horoscope || data.content || data.prediction || JSON.stringify(data)}</Text>
+            <Text style={styles.content}>{data.horoscope || data.content || data.prediction || data.message || ''}</Text>
           </View>
         ) : (
-          <Text style={styles.error}>Unable to fetch horoscope. Try again.</Text>
+          <View style={{ alignItems: 'center', marginTop: 40 }}>
+            <Text style={styles.error}>{error || 'Unable to fetch horoscope.'}</Text>
+            <TouchableOpacity style={styles.retryBtn} onPress={() => fetchHoroscope(period)}>
+              <Text style={styles.retryText}>Retry</Text>
+            </TouchableOpacity>
+          </View>
         )}
 
         <View style={{ height: 32 }} />
@@ -87,5 +94,7 @@ const styles = StyleSheet.create({
   card: { backgroundColor: colors.bgCard, borderRadius: 16, padding: 20, borderWidth: 1, borderColor: colors.border },
   cardTitle: { fontSize: 16, fontWeight: 'bold', color: colors.gold, marginBottom: 12 },
   content: { color: colors.text, fontSize: 15, lineHeight: 26 },
-  error: { color: colors.error, textAlign: 'center', marginTop: 40 },
+  error: { color: colors.error, textAlign: 'center', marginBottom: 16 },
+  retryBtn: { backgroundColor: colors.primary, borderRadius: 10, paddingHorizontal: 24, paddingVertical: 10 },
+  retryText: { color: '#fff', fontWeight: '600' },
 });

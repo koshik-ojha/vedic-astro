@@ -19,7 +19,10 @@ export default function LoginScreen({ navigation }) {
     try {
       await login(email.trim(), password);
     } catch (e) {
-      Alert.alert('Login Failed', e.response?.data?.detail || 'Invalid credentials');
+      const msg = e.code === 'ECONNABORTED'
+        ? 'Server is waking up, please try again in a moment.'
+        : e.response?.data?.detail || e.response?.data?.message || 'Invalid credentials. Please check your email and password.';
+      Alert.alert('Login Failed', msg);
     } finally {
       setLoading(false);
     }
